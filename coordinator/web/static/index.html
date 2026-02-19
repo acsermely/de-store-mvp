@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated Storage Network - Test UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .instructions {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .instructions h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .instructions code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #d63384;
+        }
+
+        .test-user {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+
+        .test-user h3 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .test-user p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .main-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .auth-section {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .upload-section, .files-section {
+            margin-top: 25px;
+        }
+
+        .drop-zone {
+            border: 3px dashed #ccc;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .drop-zone i {
+            font-size: 3em;
+            color: #999;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .drop-zone p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .drop-zone .hint {
+            font-size: 0.9em;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        .files-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .file-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+
+        .file-details h4 {
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .file-details p {
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+
+        .status-message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .token-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.85em;
+            word-break: break-all;
+            margin-top: 10px;
+            color: #666;
+        }
+
+        .credits-info {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .credits-info h4 {
+            color: #856404;
+            margin-bottom: 5px;
+        }
+
+        .credits-info p {
+            color: #856404;
+            font-size: 0.95em;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .main-panel {
+                padding: 20px;
+            }
+
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .file-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Federated Storage Network</h1>
+            <p>Test Upload & Download Interface</p>
+        </header>
+
+        <div class="instructions">
+            <h2>📋 Quick Start Instructions</h2>
+            <ol>
+                <li>Make sure the coordinator is running: <code>cd coordinator && go run cmd/api/main.go</code></li>
+                <li>At least one storage node should be registered and running</li>
+                <li>Use the test user credentials below, or register a new user</li>
+                <li>Login to get your access token</li>
+                <li>Upload files (they'll be encrypted and distributed across storage nodes)</li>
+                <li>View your files and download them back</li>
+            </ol>
+
+            <div class="test-user">
+                <h3>👤 Test User (Pre-configured)</h3>
+                <p><strong>Email:</strong> <code>test@example.com</code></p>
+                <p><strong>Password:</strong> <code>testpassword123</code></p>
+                <p><strong>Credits:</strong> 10,000 (pre-loaded)</p>
+                <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    Run <code>./setup-test-user.sh</code> to create this user in the database
+                </p>
+            </div>
+        </div>
+
+        <div class="main-panel">
+            <!-- Authentication Section -->
+            <div class="auth-section" id="authSection">
+                <h3 class="section-title">Authentication</h3>
+                
+                <div id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="test@example.com" value="test@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="testpassword123" value="testpassword123">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="login()">🔑 Login</button>
+                        <button class="btn btn-secondary" onclick="register()">📝 Register</button>
+                    </div>
+                </div>
+
+                <div id="userInfo" class="hidden">
+                    <div class="credits-info">
+                        <h4>💰 Your Credits</h4>
+                        <p>Available: <strong id="creditsAmount">0</strong> credits</p>
+                        <p style="font-size: 0.85em; margin-top: 5px;">
+                            Storage costs: 100 credits per GB per month (with 3x replication)
+                        </p>
+                    </div>
+                    <p><strong>Logged in as:</strong> <span id="userEmail"></span></p>
+                    <div class="token-display">
+                        <strong>Token:</strong> <span id="tokenDisplay"></span>
+                    </div>
+                    <button class="btn btn-secondary btn-small" onclick="logout()" style="margin-top: 10px;">Logout</button>
+                </div>
+
+                <div id="authStatus" class="status-message"></div>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="upload-section hidden" id="uploadSection">
+                <h3 class="section-title">Upload Files</h3>
+                
+                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <span style="font-size: 3em;">📁</span>
+                    <p>Click to select files or drag & drop here</p>
+                    <p class="hint">Supports any file type • Max size depends on your credits</p>
+                </div>
+
+                <input type="file" id="fileInput" onchange="handleFileSelect(event)">
+
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <div id="uploadStatus" class="status-message"></div>
+            </div>
+
+            <!-- Files Section -->
+            <div class="files-section hidden" id="filesSection">
+                <h3 class="section-title">Your Files</h3>
+                
+                <div style="margin-bottom: 15px;">
+                    <button class="btn btn-primary btn-small" onclick="loadFiles()">🔄 Refresh List</button>
+                </div>
+
+                <div class="files-list" id="filesList">
+                    <p style="color: #888; text-align: center; padding: 30px;">
+                        No files yet. Upload your first file above!
+                    </p>
+                </div>
+
+                <div id="filesStatus" class="status-message"></div>
+            </div>
+        </div>
+
+        <footer style="text-align: center; margin-top: 30px; color: white; opacity: 0.8;">
+            <p>Federated Storage Network MVP • Built with ❤️</p>
+            <p style="font-size: 0.9em; margin-top: 5px;">
+                Files are encrypted with AES-256-GCM and distributed across storage nodes
+            </p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+[node]
+name = "Storage Node 2"
+data_dir = "/data"
+max_storage_gb = 100
+
+[coordinator]
+url = "http://coordinator:8080"
+
+[storage]
+chunk_dir = "/data/chunks"
+
+[api]
+host = "0.0.0.0"
+port = 8090
+
+[p2p]
+listen_addresses = ["/ip4/0.0.0.0/tcp/0", "/ip4/0.0.0.0/udp/0/quic-v1"]

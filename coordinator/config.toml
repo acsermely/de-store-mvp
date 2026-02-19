@@ -1,0 +1,27 @@
+# Coordinator Configuration
+[server]
+host = "0.0.0.0"
+port = 8080
+read_timeout = 30
+write_timeout = 30
+
+[database]
+host = "localhost"
+port = 5432
+user = "postgres"
+password = "postgres"
+database = "coordinator"
+ssl_mode = "disable"
+
+[p2p]
+listen_addresses = ["/ip4/0.0.0.0/tcp/4001", "/ip4/0.0.0.0/udp/4001/quic-v1"]
+bootstrap_peers = []
+enable_quic = true
+enable_tcp = true
+
+[storage]
+chunk_size_bytes = 262144  # 256KB
+default_replicas = 3
+proof_difficulty = 1000
+proof_interval_hours = 4
+storage_credit_per_gb_month = 100

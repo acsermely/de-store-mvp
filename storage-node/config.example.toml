@@ -1,0 +1,21 @@
+# Storage Node Configuration
+[node]
+name = "My Storage Node"
+data_dir = "./data"
+max_storage_gb = 100
+api_key = ""
+
+[coordinator]
+url = "http://localhost:8080"
+auth_token = ""
+
+[storage]
+chunk_dir = "./data/chunks"
+
+[api]
+host = "127.0.0.1"
+port = 8090
+
+[p2p]
+listen_addresses = ["/ip4/0.0.0.0/tcp/0", "/ip4/0.0.0.0/udp/0/quic-v1"]
+bootstrap_peers = []

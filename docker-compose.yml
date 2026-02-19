@@ -1,0 +1,71 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: coordinator
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  coordinator:
+    build: ./coordinator
+    environment:
+      CONFIG_PATH: /app/config.toml
+      JWT_SECRET: your-secret-key-change-in-production
+      MIGRATIONS_PATH: /app/migrations
+    volumes:
+      - ./coordinator/config.toml:/app/config.toml:ro
+    ports:
+      - "8080:8080"
+      - "4001:4001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["./coordinator"]
+
+  storage-node-1:
+    build: ./storage-node
+    environment:
+      CONFIG_PATH: /app/config.toml
+    volumes:
+      - storage_node_1_data:/data
+      - ./storage-node/config.node1.toml:/app/config.toml:ro
+    depends_on:
+      - coordinator
+    command: ["./storage-node", "start"]
+
+  storage-node-2:
+    build: ./storage-node
+    environment:
+      CONFIG_PATH: /app/config.toml
+    volumes:
+      - storage_node_2_data:/data
+      - ./storage-node/config.node2.toml:/app/config.toml:ro
+    depends_on:
+      - coordinator
+    command: ["./storage-node", "start"]
+
+  storage-node-3:
+    build: ./storage-node
+    environment:
+      CONFIG_PATH: /app/config.toml
+    volumes:
+      - storage_node_3_data:/data
+      - ./storage-node/config.node3.toml:/app/config.toml:ro
+    depends_on:
+      - coordinator
+    command: ["./storage-node", "start"]
+
+volumes:
+  postgres_data:
+  storage_node_1_data:
+  storage_node_2_data:
+  storage_node_3_data:

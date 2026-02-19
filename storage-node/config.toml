@@ -1,0 +1,22 @@
+[node]
+name = 'Node 5'
+data_dir = 'data'
+max_storage_gb = 100
+api_key = ''
+
+[coordinator]
+url = 'http://localhost:8080'
+auth_token = ''
+peer_id = '12D3KooWEGfQ5GVRTG6YEsXocfG1cPVL9nG6ErDmiMCG7SfNQesm'
+api_key = 'fsn_b7844972-056c-414a-b661-f6139d2eaca9'
+
+[storage]
+chunk_dir = 'data/chunks'
+
+[api]
+host = '127.0.0.1'
+port = 8090
+
+[p2p]
+listen_addresses = []
+bootstrap_peers = []
